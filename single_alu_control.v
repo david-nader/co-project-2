@@ -1,41 +1,46 @@
 /* ALU Control */
 
+`include "single_defs.v"
+
 
 module alu_control_single ( aluop , functioncode ,aluoperation);
 input wire [1:0] aluop;
 input wire [5:0] functioncode;
 output reg [3:0] aluoperation;
+
 always @(*)
-begin 
+begin
+
+//default case, for synthesization,
+//should be overriden by one of the conditions below
+aluoperation <= `alu_operation_add;
+
 if(aluop==2'b10)
 begin
 if(functioncode==6'b000000)//shift left aluoperation 1111 
-aluoperation <=4'b1111;
+aluoperation <= `alu_operation_sll;
 
 if(functioncode==6'b100000)//add
-aluoperation <=4'b0010;
+aluoperation <= `alu_operation_add;
 
 if(functioncode==6'b100100)//and
- aluoperation <=4'b0000;
+ aluoperation <= `alu_operation_and;
 
 if(functioncode==6'b100010)//sub
- aluoperation <=4'b0110;
+ aluoperation <= `alu_operation_sub;
 
 if(functioncode==6'b100101)//or
- aluoperation <=4'b0001;
+ aluoperation <= `alu_operation_or;
 
 if(functioncode==6'b101010)//setless than
-aluoperation=4'b0111;
+aluoperation <= `alu_operation_slt;
 end
 
 else if (aluop==2'b00)
-aluoperation <=4'b0010;
+aluoperation <= `alu_operation_add; //add for lw
 
 else if (aluop==2'b01)
- aluoperation <=4'b0110;
-
-else //dont care
- aluoperation <=4'b0110;
+ aluoperation <= `alu_operation_sub; //sub for beq
 end
 
 endmodule
@@ -52,7 +57,7 @@ initial
 begin 
 $monitor(" aluop= %b   functioncode=%b     aluoperation=%b  ",aluop,functioncode ,aluoperation);
 #10 
-aluop=00;
+aluop='b00;
 
 #10 
 aluop='b01;
