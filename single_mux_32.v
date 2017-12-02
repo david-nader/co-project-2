@@ -1,34 +1,17 @@
 
-module mux_2 (Read_data_2,sign_extend_output , AluSrc , z);
+module mux_2 (in1, in2 , sel, out);
 
-input  [31:0] Read_data_2,sign_extend_output;
-input AluSrc;
-output reg [31:0] z;
+input  [31:0] in1,in2;
+input sel;
+output reg [31:0] out;
 
-always @(AluSrc or Read_data_2 or sign_extend_output)
+always @(sel or in1 or in2)
 begin
-if(AluSrc==0)
-   z=Read_data_2;
-else if(AluSrc ==1)
-   z=sign_extend_output;
-end
-endmodule
-
-
-
-module mux_3 ( Read_data,Alu_output , MemtoReg , z);
-
-input  [31:0] Read_data,Alu_output;
-input MemtoReg;
-output reg [31:0] z;
-
-always @(MemtoReg or Read_data or Alu_output)
-begin
-
-if(MemtoReg==1)
-   z=Read_data;
-else if(MemtoReg==0)
-   z=Alu_output;
+if(sel==0)
+   out=in1;
+else
+   out=in2;
 end
 
 endmodule
+

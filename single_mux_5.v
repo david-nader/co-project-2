@@ -1,17 +1,16 @@
 
-module mux_1 ( x,y , RegDst , z);
+module mux_1 (in1, in2, sel, out);
 
-input  [4:0] x,y;
-input RegDst;
-output reg [4:0] z;
+input  [4:0] in1,in2;
+input sel;
+output reg [4:0] out;
 
-always @(RegDst or x or y)
+always @(sel or in1 or in2)
 begin
-
-if(RegDst==0)
-   z=x;
-else if(RegDst ==1)
-   z=y;
+if(sel==0)
+   out=in1;
+else
+   out=in2;
 end
 
 endmodule

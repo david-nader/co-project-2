@@ -1,13 +1,4 @@
 
-module alu_adder1 (pc,out); 
-
-input [31:0] pc;
-output  [31:0] out ;
-assign out = pc + 4;
-
-endmodule
-
-
 
 module alu_adder2 (in1,in2,o);
 
