@@ -34,7 +34,8 @@ endmodule
 
 module register_file_testbench;
 
-reg [31:0] reg_read1, reg_read2, reg_write, data_write;
+reg [4:0] reg_read1, reg_read2, reg_write;
+reg [31:0] data_write;
 wire [31:0] data_read1, data_read2;
 reg write_enable;
 reg clk;
