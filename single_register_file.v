@@ -16,17 +16,19 @@ parameter bit_width = 32, num_registers = 32;
 reg [bit_width-1:0] memory [num_registers-1:0];
 //example: memory[0] refers to the first register
 
-initial begin
-//first register is always zero by design
-memory[0] <= 0;
-end
-
+//read-after-write:
+//writing occurs in first half of cycle,
+//reading occurs in second half of cycle,
+//so an instruction can read what another
+//instruction has written in the same
+//cycle
 always @(posedge clk)
 begin
-data_read1 <= memory [reg_read1];
-data_read2 <= memory [reg_read2];
 if(write_enable && reg_write != 0)
 	memory [reg_write] <= data_write;
+memory[0] <= 0; //first register is always zero by design
+data_read1 <= memory [reg_read1];
+data_read2 <= memory [reg_read2];
 end
 
 endmodule
