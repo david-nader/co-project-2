@@ -1,5 +1,5 @@
 
-module mux_1 (in1, in2, sel, out);
+module mux_5x2(in1, in2, sel, out);
 
 input  [4:0] in1,in2;
 input sel;

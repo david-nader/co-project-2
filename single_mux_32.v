@@ -1,5 +1,5 @@
 
-module mux_2 (in1, in2 , sel, out);
+module mux_32x2(in1, in2, sel, out);
 
 input  [31:0] in1,in2;
 input sel;
