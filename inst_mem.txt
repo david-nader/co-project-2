@@ -19,7 +19,7 @@
 1111_1111
 
 
-@20 //NOTE: relative to address of last read byte
+@20 //NOTE: address is in HEX
 1111_1111 //i.e. this is at address 32
 1111_1111
 1111_1111
