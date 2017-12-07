@@ -1,23 +1,21 @@
+//prevent verilog from declaring undefined variables as wire,
+//instead, it throws an error
+`default_nettype none
 
-module IF_ID (clock,Inst,Pc4,hazard_out,pc4_reg,Instreg);
-input [31:0] Inst,Pc4;
-input clock,hazard_out;
-output [31:0] pc4_reg,Instreg;
-reg [31:0] pc4_reg,Instreg;
+module IFID (clock,Inst,Pc4,hazard_hold,pc4_reg,Instreg);
 
-initial
-begin
-pc4_reg =0;
-Instreg =0;
-end
+input wire clock, hazard_hold;
+input wire [31:0] Inst, Pc4;
+
+output reg [31:0] pc4_reg, Instreg;
 
 always @ (posedge clock)
 begin
-if(hazard_out)
+if(!hazard_hold)
 	begin
 	Instreg <= Inst;
 	pc4_reg <= Pc4;
 	end
-end //always
+end
 
 endmodule

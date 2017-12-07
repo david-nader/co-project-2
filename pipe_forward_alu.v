@@ -1,5 +1,5 @@
 
-module forwardunitalu (EXMEM_RegWrite, EXMEM_RegisterRd, IDEX_RegisterRs, IDEX_RegisterRt, MEMWB_RegWrite, MEMWB_RegisterRd,forwardA ,forwardB);
+module forward_alu (EXMEM_RegWrite, EXMEM_RegisterRd, IDEX_RegisterRs, IDEX_RegisterRt, MEMWB_RegWrite, MEMWB_RegisterRd,forwardA ,forwardB);
 input wire[1:0] EXMEM_RegWrite;
 input wire[1:0] MEMWB_RegWrite;
 input wire[4:0] EXMEM_RegisterRd;
@@ -17,36 +17,41 @@ and (EX/MEM.RegisterRd = ID/EX.RegisterRs)) ForwardA = 10
 
 if (EX/MEM.RegWrite
 and (EX/MEM.RegisterRd ? 0)
-and (EX/MEM.RegisterRd = ID/EX.RegisterRt)) ForwardB = 10*/
+and (EX/MEM.RegisterRd = ID/EX.RegisterRt)) ForwardB = 10
+*/
 
-/*MEM hazard:
+/* MEM hazard:
 if (MEM/WB.RegWrite
 and (MEM/WB.RegisterRd ? 0)
 and ( MEM/WB.RegisterRd = ID/EX.RegisterRs)) ForwardA = 01
+and not (EX hazard...)
 
 if (MEM/WB.RegWrite
 and (MEM/WB.RegisterRd ? 0)
-and (MEM/WB.RegisterRd = ID/EX.RegisterRt)) ForwardB = 01*/
+and (MEM/WB.RegisterRd = ID/EX.RegisterRt)) ForwardB = 01
+and not (EX hazard...)
+*/
 
 always @(*)
 begin
-if((EXMEM_RegWrite==1)&& (EXMEM_RegisterRd != 0)&&(EXMEM_RegisterRd ==IDEX_RegisterRs))
+//alu to alu forwarding
+if((EXMEM_RegWrite==1) && (EXMEM_RegisterRd != 0) && (EXMEM_RegisterRd == IDEX_RegisterRs))
 begin 
 	forwardA<=2'b10;
-	if((EXMEM_RegWrite==1)&& (EXMEM_RegisterRd != 0)&&(EXMEM_RegisterRd == IDEX_RegisterRt))
+	if((EXMEM_RegWrite==1) && (EXMEM_RegisterRd != 0) &&( EXMEM_RegisterRd == IDEX_RegisterRt))
 	forwardB<=2'b10;
 	else
 	forwardB<=2'b00;
 end 
 
 
-else if((EXMEM_RegWrite==1)&& (EXMEM_RegisterRd != 0)&&(EXMEM_RegisterRd == IDEX_RegisterRt))
+else if((EXMEM_RegWrite==1) && (EXMEM_RegisterRd != 0) && (EXMEM_RegisterRd == IDEX_RegisterRt))
 begin
 	forwardB<=2'b10;
 	forwardA<=2'b00;
 end 
 
-
+//memory to alu forwarding:
 else if ((MEMWB_RegWrite==1)&& (MEMWB_RegisterRd != 0)&& (MEMWB_RegisterRd == IDEX_RegisterRs))
 begin
 	forwardA<=2'b01;
@@ -65,8 +70,10 @@ end
 
 
 else
+	begin
 	forwardA<=2'b00;
 	forwardB<=2'b00;
+	end
 end //always
 
 endmodule
@@ -157,5 +164,5 @@ $display ("MEMWB_RegisterRd=%d  ,EXMEM_RegisterRd=%d  ,IDEX_RegisterRs=%d  , IDE
 	IDEX_RegisterRs,IDEX_RegisterRt,MEMWB_RegWrite,EXMEM_RegWrite,forwardA,forwardB);
 end //initial
 
-forwardunitalu g1 (EXMEM_RegWrite, EXMEM_RegisterRd, IDEX_RegisterRs, IDEX_RegisterRt, MEMWB_RegWrite, MEMWB_RegisterRd,forwardA ,forwardB);
+forward_alu g1 (EXMEM_RegWrite, EXMEM_RegisterRd, IDEX_RegisterRs, IDEX_RegisterRt, MEMWB_RegWrite, MEMWB_RegisterRd,forwardA ,forwardB);
 endmodule 

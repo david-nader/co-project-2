@@ -1,17 +1,17 @@
 
-module memoryforwardunit (opcode, MEMWB_RegisterRt,EXMEM_RegisterRt ,forwardM );
-input [5:0] opcode;
+module forward_memory (EXMEM_MemRead, MEMWB_RegisterRt,EXMEM_RegisterRt ,forwardM );
+input EXMEM_MemRead;
 input [4:0] MEMWB_RegisterRt;
 input [4:0] EXMEM_RegisterRt;
 output reg forwardM ;
 
 always@(*)
 begin
-if ((MEMWB_RegisterRt == EXMEM_RegisterRt) && (opcode == 6'b100011))
+if (EXMEM_MemRead && (MEMWB_RegisterRt == EXMEM_RegisterRt))
 forwardM <= 1'b1;
 else
 forwardM <= 1'b0;
-end  //always
+end
 endmodule
 
 
@@ -41,5 +41,5 @@ opcode<=6'b100111;
 MEMWB_RegisterRt<=1;
 EXMEM_RegisterRt<=1;
 end
-memoryforwardunit g3 (opcode, MEMWB_RegisterRt,EXMEM_RegisterRt ,forwardM );
+forward_memory g3(opcode, MEMWB_RegisterRt,EXMEM_RegisterRt ,forwardM );
 endmodule

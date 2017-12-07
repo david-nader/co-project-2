@@ -1,32 +1,26 @@
+//prevent verilog from declaring undefined variables as wire,
+//instead, it throws an error
+`default_nettype none
 
-module ProgramCounter(PCNext, PCResult, Reset, Clk,PCWrite);
+module PC(PCNext, PCResult, Reset, Clk, PCWrite);
 
-	input       [31:0]  PCNext;
-	input               Reset, Clk,PCWrite;
+	input wire  [31:0]  PCNext;
+	input wire          Reset, Clk, PCWrite;
 
 	output reg  [31:0]  PCResult;
 
-    /* Please fill in the implementation here... */
-
-	initial begin
-	
-		PCResult <= 32'h00000000;
-	end
-
     always @(posedge Clk)
     begin
-    	if (Reset == 1)
+    	if (Reset)
     	begin
     		PCResult <= 32'h00000000;
     	end
     	else
     	begin
-			if (PCWrite == 1) begin
+			if (!PCWrite) begin
 				PCResult <= PCNext;
 			end
     	end
-
-		$display("PC=%h",PCResult);
     end
 
 endmodule
