@@ -39,21 +39,24 @@ wire Hazard_IFIDHold, Hazard_PcHold, Hazard_Mux;
 
 wire IDEX_RegWrite, IDEX_MemToReg, IDEX_MemRead, IDEX_MemWrite, IDEX_Branch, IDEX_RegDst, IDEX_AluSrc;
 wire [1:0] IDEX_AluOp;
-wire [31:0] IDEX_Pc4, IDEX_ReadData1, IDEX_ReadData2, IDEX_Immediate;
+wire [31:0] IDEX_Pc4, IDEX_ReadData1, IDEX_ReadData2;
+wire [15:0] IDEX_Immediate;
 wire [4:0] IDEX_Rs, IDEX_Rt, IDEX_Rd;
 
 //Execute
 wire [31:0] SignExtend_Output;
 wire [31:0] ShiftLeft2_Output;
 wire [31:0] AdderBeq_Result;
-wire [31:0] MuxForwardA_Output, MuxForwardB_Output, MuxRegDst_Output, MuxAluSrc_Output;
+wire [31:0] MuxForwardA_Output, MuxForwardB_Output, MuxAluSrc_Output;
+wire [4:0] MuxRegDst_Output;
 wire [3:0] AluControl_Output;
 wire [31:0] Alu_Result;
 wire Alu_Zero;
-wire ForwardAlu_ForwardA, ForwardAlu_ForwardB;
+wire [1:0] ForwardAlu_ForwardA, ForwardAlu_ForwardB;
 
 wire EXMEM_RegWrite, EXMEM_MemToReg, EXMEM_MemRead, EXMEM_MemWrite;
-wire [31:0] EXMEM_AluResult, EXMEM_MuxForwardB, EXMEM_MuxRegDst;
+wire [31:0] EXMEM_AluResult, EXMEM_MuxForwardB;
+wire [4:0] EXMEM_MuxRegDst;
 
 //Memory
 wire [31:0] MuxWriteData_Output;
@@ -61,7 +64,8 @@ wire [31:0] DataMemory_ReadData;
 wire ForwardMem_ForwardWriteData;
 
 wire MEMWB_RegWrite, MEMWB_MemToReg;
-wire MEMWB_ReadData, MEMWB_AluResult, MEMWB_MuxRegDst;
+wire [31:0] MEMWB_ReadData, MEMWB_AluResult;
+wire [4:0] MEMWB_MuxRegDst;
 
 //Write Back
 wire [31:0] MuxMemToReg_Output;
@@ -89,7 +93,8 @@ control ControlUnit(	InstMem_ReadData[31:26],
 			Control_MemRead, Control_MemWrite, Control_MemtoReg,
 			Control_RegDst, Control_RegWrite, Control_AluSrc);
 register_file RegFile(InstMem_ReadData[25:21], InstMem_ReadData[20:16], MEMWB_MuxRegDst,
-		Reg_ReadData1, Reg_ReadData2, MEMWB_MemToReg, MEMWB_RegWrite, clk);
+		Reg_ReadData1, Reg_ReadData2, MuxMemToReg_Output, MEMWB_RegWrite, clk);
+
 mux_9x2 MuxHazard(	{
 				Control_RegWrite, Control_MemtoReg,
 				Control_MemRead, Control_MemWrite,
@@ -114,7 +119,7 @@ IDEX IDEXReg(clk,
 mux_32x3 MuxForwardA(IDEX_ReadData1, MuxMemToReg_Output, EXMEM_AluResult, ForwardAlu_ForwardA, MuxForwardA_Output);
 mux_32x3 MuxForwardB(IDEX_ReadData2, MuxMemToReg_Output, EXMEM_AluResult, ForwardAlu_ForwardB, MuxForwardB_Output);
 mux_5x2 MuxRegDst(IDEX_Rt, IDEX_Rd, IDEX_RegDst, MuxRegDst_Output);
-mux_32x2 MuxAluSrc(MuxForwardB_Output, IDEX_Immediate, IDEX_AluSrc, MuxAluSrc_Output);
+mux_32x2 MuxAluSrc(MuxForwardB_Output, SignExtend_Output, IDEX_AluSrc, MuxAluSrc_Output);
 alu ALU(Alu_Result, Alu_Zero, MuxForwardA_Output, MuxAluSrc_Output, IDEX_Immediate[10:6], AluControl_Output);
 sign_extend SignExtend(IDEX_Immediate, SignExtend_Output);
 shift_left_2 ShiftLeft2(SignExtend_Output , ShiftLeft2_Output);
@@ -136,7 +141,7 @@ EXMEM EXMEMReg(clk,
 		EXMEM_AluResult, EXMEM_MuxForwardB, EXMEM_MuxRegDst);
 
 //Memory
-mux_32x2 MuxWriteData(EXMEM_MuxForwardB, MEMWB_MuxRegDst, ForwardMem_ForwardWriteData, MuxWriteData_Output);
+mux_32x2 MuxWriteData(EXMEM_MuxForwardB, MuxMemToReg_Output, ForwardMem_ForwardWriteData, MuxWriteData_Output);
 forward_memory MemoryForwardUnit(EXMEM_MemRead, MEMWB_MuxRegDst, EXMEM_MuxRegDst , ForwardMem_ForwardWriteData);
 data_memory DMem(DataMemory_ReadData, EXMEM_AluResult, MuxWriteData_Output, EXMEM_MemWrite, EXMEM_MemRead, clk);
 
@@ -151,5 +156,51 @@ MEMWB MEMWBReg(clk,
 //Write Back
 mux_32x2 MuxMemToReg(MEMWB_ReadData, MEMWB_AluResult, MEMWB_MemToReg, MuxMemToReg_Output);
 
+endmodule
+
+
+
+
+
+module cpu_pipe_testbench;
+
+reg clk, reset;
+
+cpu_pipe DUT(clk, reset);
+integer i;
+
+always #1 clk = ~clk;
+
+initial begin
+clk = 0;
+reset = 0;
+//initialize register file with some values
+for(i=0; i<32; i=i+1) begin
+	DUT.RegFile.memory[i] = i * 10;
+end //for
+
+#2
+reset = 1;
+//for some reason, $monitor does not print reset = 1
+$strobe("time: %2t, reset: %d", $time, reset);
+
+#5
+//NOTE: reset must go LOW on a -ve clk edge
+reset = 0;
+$strobe("time: %2t, reset: %d", $time, reset);
+
+
+$monitor("time: %2t: ", $time,
+	"reset: %d   ", reset,
+	"op: %d, ", DUT.InstMem_ReadData[31:26],
+	"rs: %d, ", DUT.InstMem_ReadData[25:21],
+	"rt: %d, ", DUT.InstMem_ReadData[20:16],
+	"[rd: %d, ", DUT.InstMem_ReadData[15:11],
+	"shamt: %d, ", DUT.InstMem_ReadData[10:6],
+	"funct: %d] | ", DUT.InstMem_ReadData[5:0],
+	"[Immediate: %d]", DUT.InstMem_ReadData[15:0]);
+
+
+end //initial
 
 endmodule

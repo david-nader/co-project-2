@@ -25,14 +25,18 @@ module IDEX (clk,
 input wire clk;
 input wire wb_RegWrite, wb_MemToReg,
 	   mem_MemRead, mem_MemWrite,
-	   ex_RegDst, ex_AluSrc, ex_AluOp, ex_branch;
-input wire [31:0] pc4, read_data1, read_data2, immediate;
+	   ex_RegDst, ex_AluSrc, ex_branch;
+input wire [1:0] ex_AluOp;
+input wire [31:0] pc4, read_data1, read_data2;
+input wire [15:0] immediate;
 input wire [4:0] rs, rt, rd;
 //outputs:
 output reg wb_RegWrite_out, wb_MemToReg_out,
 	   mem_MemRead_out, mem_MemWrite_out,
-	   ex_RegDst_out, ex_AluSrc_out, ex_AluOp_out, ex_branch_out;
-output reg [31:0] pc4_out, read_data1_out, read_data2_out, immediate_out;
+	   ex_RegDst_out, ex_AluSrc_out, ex_branch_out;
+output reg [1:0] ex_AluOp_out;
+output reg [31:0] pc4_out, read_data1_out, read_data2_out;
+output reg [15:0] immediate_out;
 output reg [4:0] rs_out, rt_out, rd_out;
 
 always @(posedge clk) begin

@@ -1,7 +1,7 @@
 
 module forward_alu (EXMEM_RegWrite, EXMEM_RegisterRd, IDEX_RegisterRs, IDEX_RegisterRt, MEMWB_RegWrite, MEMWB_RegisterRd,forwardA ,forwardB);
-input wire[1:0] EXMEM_RegWrite;
-input wire[1:0] MEMWB_RegWrite;
+input wire EXMEM_RegWrite;
+input wire MEMWB_RegWrite;
 input wire[4:0] EXMEM_RegisterRd;
 input wire[4:0] MEMWB_RegisterRd;
 input wire[4:0] IDEX_RegisterRs ;
