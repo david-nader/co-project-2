@@ -2,7 +2,7 @@
 //instead, it throws an error
 `default_nettype none
 
-module EXMEM (clk,
+module MEMWB (clk,
 		//inputs:
 		wb_RegWrite, wb_MemToReg,
 		DataMemory_ReadData, ExMem_AluResult, ExMem_MuxRegDst,
