@@ -26,6 +26,9 @@ case(alu_operation)
 `alu_operation_add:
 result <= operand1 + operand2;
 
+`alu_operation_sub:
+result <= operand1 - operand2;
+
 `alu_operation_and:
 result <= operand1 & operand2;
 
@@ -33,7 +36,8 @@ result <= operand1 & operand2;
 result <= operand1 | operand2;
 
 `alu_operation_sll:
-result <= operand1 << shamt;
+//note: operand2, not 1, because sll uses rt, not rs
+result <= operand2 << shamt;
 
 default:
 //should not be reached

@@ -13,7 +13,7 @@ input wire clk;
 parameter mem_size = 256;
 reg [7:0] memory [0:mem_size*4-1];
 
-always @(posedge clk) begin
+always @(negedge clk) begin
 //read or write in a cycle, but not both
 if(mem_read)
 	read_data = {memory[address], memory[address+1], memory[address+2], memory[address+3]};

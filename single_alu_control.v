@@ -51,7 +51,7 @@ module alucontroltest;
 reg  [1:0] aluop;
 reg  [5:0] functioncode;
 wire [3:0] aluoperation;
-alu_control_single g1 ( aluop , functioncode ,aluoperation);
+alu_control g1 ( aluop , functioncode ,aluoperation);
 
 initial 
 begin 

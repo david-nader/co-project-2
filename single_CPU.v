@@ -112,9 +112,25 @@ end //for
 
 #2
 reset = 1;
+//for some reason, $monitor does not print reset = 1
+$strobe("time: %2t, reset: %d", $time, reset);
 
-#7
+#5
+//NOTE: reset must go LOW on a -ve clk edge
 reset = 0;
+$strobe("time: %2t, reset: %d", $time, reset);
+
+
+$monitor("time: %2t: ", $time,
+	"reset: %d   ", reset,
+	"op: %d, ", DUT.InstMemory_Instruction[31:26],
+	"rs: %d, ", DUT.InstMemory_Instruction[25:21],
+	"rt: %d, ", DUT.InstMemory_Instruction[20:16],
+	"[rd: %d, ", DUT.InstMemory_Instruction[15:11],
+	"shamt: %d, ", DUT.InstMemory_Instruction[10:6],
+	"funct: %d] | ", DUT.InstMemory_Instruction[5:0],
+	"[Immediate: %d]", DUT.InstMemory_Instruction[15:0]);
+
 
 end //initial
 
