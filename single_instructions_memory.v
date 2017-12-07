@@ -16,9 +16,9 @@ always @(posedge clk or posedge reset) begin
 
 if(reset)
 	//read instructions memory from file
-	$readmemb("inst_mem.txt", memory);
+	$readmemh("inst_mem.txt", memory);
 else
-	instruction = {memory[read_address], memory[read_address+1], memory[read_address+2], memory[read_address+3]};
+	instruction <= {memory[read_address], memory[read_address+1], memory[read_address+2], memory[read_address+3]};
 
 end //always
 

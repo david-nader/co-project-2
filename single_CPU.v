@@ -80,7 +80,10 @@ data_memory DMem(DataMemory_ReadData, Alu_Result, Reg_ReadData2, Control_MemWrit
 
 mux_32x2 MUXMemToReg(Alu_Result, DataMemory_ReadData, Control_MemtoReg, MuxMemToReg_Output);
 
-always @(posedge clk)
+always @(negedge clk or posedge reset)
+if(reset)
+pc <= 0;
+else
 pc <= MuxBranch_Output;
 
 endmodule
@@ -107,10 +110,10 @@ for(i=0; i<32; i=i+1) begin
 	DUT.Regs.memory[i] = i * 10;
 end //for
 
-#10
+#2
 reset = 1;
 
-#10
+#7
 reset = 0;
 
 end //initial
