@@ -11,7 +11,7 @@ input wire reset;
 reg [31:0] pc;
 
 //Conventions for naming internal wires:
-//1. ModuleName_PortName: wire from RegDst MUX output port
+//1. ModuleName_PortName: e.g. MuxRegDst_Output: wire from RegDst MUX output port
 //2. CamelCase
 //3. CamelCase also for abbreviations (eg AluControl, not ALUControl)
 
