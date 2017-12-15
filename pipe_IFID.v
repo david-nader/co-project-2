@@ -15,9 +15,11 @@ if (!reset) begin
 if (!hazard_hold) begin
 	Instreg <= Inst;
 	pc4_reg <= Pc4;
-end else if(hazard_hold)
+end
+/*
+else if(hazard_hold)
 	Instreg <= 0; //insert nop (no-operation) instruction
-
+*/
 end //if (!reset)
 
 end //always
