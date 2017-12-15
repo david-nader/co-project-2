@@ -1,7 +1,7 @@
 /* ALU Control */
 
 
-module control(
+module control(	input wire reset,
 		input  wire [5:0] opcode,
 		output reg branch_eq,
 		output reg [1:0] aluop,
@@ -20,7 +20,6 @@ module control(
 		regdst		<= 1'b1;
 		regwrite	<= 1'b1;
 		
-
 		case (opcode)
 			6'b100011: begin	/* lw */
 				memread  <= 1'b1;
@@ -44,7 +43,13 @@ module control(
 				alusrc   <= 1'b1;
 				regwrite <= 1'b0;
 			end
-			
 		endcase
-	end
+	end //always
+
+	always @(*)
+		//ensure PC will increment before an instruction
+		//reaches the EX stage
+		if(reset) begin
+			branch_eq <= 0;
+		end
 endmodule

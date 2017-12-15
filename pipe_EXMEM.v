@@ -2,7 +2,7 @@
 //instead, it throws an error
 `default_nettype none
 
-module EXMEM (clk,
+module EXMEM (clk, reset,
 		//inputs:
 		wb_RegWrite, wb_MemToReg,
 		mem_MemRead, mem_MemWrite,
@@ -13,7 +13,7 @@ module EXMEM (clk,
 		AluResult_out, MuxForwardB_out, MuxRegDst_out);
 
 //inputs:
-input wire clk;
+input wire clk, reset;
 input wire wb_RegWrite, wb_MemToReg,
 	   mem_MemRead, mem_MemWrite;
 input wire [31:0] AluResult, MuxForwardB;
@@ -26,6 +26,7 @@ output reg [4:0] MuxRegDst_out;
 
 always @(posedge clk) begin
 
+if(!reset) begin
 wb_RegWrite_out <= wb_RegWrite;
 wb_MemToReg_out <= wb_MemToReg;
 mem_MemRead_out <= mem_MemRead;
@@ -34,7 +35,7 @@ mem_MemWrite_out <= mem_MemWrite;
 AluResult_out <= AluResult;
 MuxForwardB_out <= MuxForwardB;
 MuxRegDst_out <= MuxRegDst;
-
+end //if
 end //always
 
 endmodule

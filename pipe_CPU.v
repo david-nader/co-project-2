@@ -82,12 +82,13 @@ alu_adder AdderPc(4, PC_output, AdderPc_Output);
 mux_32x2 MuxBranch(AdderPc_Output, AdderBeq_Result, And_Output, MuxBranch_Output);
 and AndGate(And_Output, IDEX_Branch, Alu_Zero);
 
-IFID IFIDReg(clk, InstMem_ReadData, AdderPc_Output, Hazard_IFIDHold, IFID_Pc4, IFID_Instruction);
+IFID IFIDReg(clk, reset, InstMem_ReadData, AdderPc_Output, Hazard_IFIDHold, IFID_Pc4, IFID_Instruction);
 
 //Decode
-hazard HazardUnit(IDEX_MemRead, IDEX_Rt, InstMem_ReadData[25:21], InstMem_ReadData[20:16],
+hazard HazardUnit(IDEX_MemRead, IDEX_Rt, IFID_Instruction[25:21], IFID_Instruction[20:16],
 			Hazard_PcHold, Hazard_IFIDHold, Hazard_Mux, Control_Branch, IDEX_Branch);
-control ControlUnit(	InstMem_ReadData[31:26],
+control ControlUnit(	reset,
+			IFID_Instruction[31:26],
 			Control_Branch,
 			Control_AluOp,
 			Control_MemRead, Control_MemWrite, Control_MemtoReg,
@@ -129,8 +130,13 @@ forward_alu AluForwardUnit(	EXMEM_RegWrite, EXMEM_MuxRegDst,
 				IDEX_Rs, IDEX_Rt,
 				MEMWB_RegWrite, MEMWB_MuxRegDst,
 				ForwardAlu_ForwardA, ForwardAlu_ForwardB);
-
-EXMEM EXMEMReg(clk,
+/* for reference (temp)
+module forward_alu (EXMEM_RegWrite, EXMEM_RegisterRd,
+			IDEX_RegisterRs, IDEX_RegisterRt,
+			MEMWB_RegWrite, MEMWB_RegisterRd,
+			forwardA ,forwardB);
+*/
+EXMEM EXMEMReg(clk, reset,
 		//inputs:
 		IDEX_RegWrite, IDEX_MemToReg,
 		IDEX_MemRead, IDEX_MemWrite,
@@ -142,10 +148,10 @@ EXMEM EXMEMReg(clk,
 
 //Memory
 mux_32x2 MuxWriteData(EXMEM_MuxForwardB, MuxMemToReg_Output, ForwardMem_ForwardWriteData, MuxWriteData_Output);
-forward_memory MemoryForwardUnit(EXMEM_MemRead, MEMWB_MuxRegDst, EXMEM_MuxRegDst , ForwardMem_ForwardWriteData);
+forward_memory MemoryForwardUnit(EXMEM_MemWrite, MEMWB_MuxRegDst, EXMEM_MuxRegDst , ForwardMem_ForwardWriteData);
 data_memory DMem(DataMemory_ReadData, EXMEM_AluResult, MuxWriteData_Output, EXMEM_MemWrite, EXMEM_MemRead, clk);
 
-MEMWB MEMWBReg(clk,
+MEMWB MEMWBReg(clk, reset,
 		//inputs:
 		EXMEM_RegWrite, EXMEM_MemToReg,
 		DataMemory_ReadData, EXMEM_AluResult, EXMEM_MuxRegDst,
@@ -178,6 +184,13 @@ reset = 0;
 for(i=0; i<32; i=i+1) begin
 	DUT.RegFile.memory[i] = i * 10;
 end //for
+//initialize a part of Data memory
+DUT.DMem.memory[0] = 0;
+DUT.DMem.memory[1] = 0;
+DUT.DMem.memory[2] = 0;
+DUT.DMem.memory[3] = 99;
+
+
 
 //make sure $monitor is before any delays,
 //otherwise it starts printing after the delay

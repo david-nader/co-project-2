@@ -1,13 +1,13 @@
 
-module forward_memory (EXMEM_MemRead, MEMWB_RegisterRt,EXMEM_RegisterRt ,forwardM );
-input EXMEM_MemRead;
+module forward_memory (EXMEM_MemWrite, MEMWB_RegisterRt,EXMEM_RegisterRt ,forwardM );
+input EXMEM_MemWrite;
 input [4:0] MEMWB_RegisterRt;
 input [4:0] EXMEM_RegisterRt;
 output reg forwardM ;
 
 always@(*)
 begin
-if (EXMEM_MemRead && (MEMWB_RegisterRt == EXMEM_RegisterRt))
+if (EXMEM_MemWrite && (MEMWB_RegisterRt == EXMEM_RegisterRt))
 forwardM <= 1'b1;
 else
 forwardM <= 1'b0;
@@ -16,7 +16,7 @@ endmodule
 
 
 
-
+//obsolete testbench
 module testmemoryforwarding;
 reg [5:0] opcode;
 reg [4:0] MEMWB_RegisterRt;

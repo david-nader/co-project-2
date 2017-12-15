@@ -27,32 +27,33 @@ input IDEXBranch;
 input ControlBranch;
 
 always @(*) begin
+
+//default values
+PCwrite<=0;
+IFIDwrite<=0;
+controlmux<=0;
+
 //Data Hazard (Memory to Alu forwarding hazard)
-if((IDEXMemRead==1) && (IDEXRegisterRt == IFIDRegisterRs) || (IDEXRegisterRt==IFIDRegisterRt))
+if(	(IDEXMemRead==1) &&
+	( (IDEXRegisterRt == IFIDRegisterRs) || (IDEXRegisterRt==IFIDRegisterRt) )	)
 	begin
 	PCwrite<=1;
 	IFIDwrite<=1;
 	controlmux<=1;
 	end
-else
-	begin 
-	PCwrite<=0;
-	IFIDwrite<=0;
-	controlmux<=0;
-	end
 //Control Hazard (beq),
 //stall twice on branch
-if(ControlBranch)
-	begin
-	PCwrite<=1;
-	IFIDwrite<=1;
-	//controlmux<=1; //let branch move to EX stage
-	end
 if(IDEXBranch)
 	begin
 	PCwrite<=1;
 	IFIDwrite<=1;
 	controlmux<=1;
+	end
+else if(ControlBranch)
+	begin
+	PCwrite<=1;
+	IFIDwrite<=1;
+	controlmux<=0; //let branch move to EX stage
 	end
 end //always
 endmodule

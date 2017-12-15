@@ -27,13 +27,13 @@ sim:/cpu_pipe_testbench/DUT/Hazard_Mux \
 sim:/cpu_pipe_testbench/DUT/Reg_ReadData1 \
 sim:/cpu_pipe_testbench/DUT/Reg_ReadData2 \
 sim:/cpu_pipe_testbench/DUT/Control_RegWrite \
-sim:/cpu_pipe_testbench/DUT/Control_RegDst \
 sim:/cpu_pipe_testbench/DUT/Control_MemtoReg \
-sim:/cpu_pipe_testbench/DUT/Control_MemWrite \
 sim:/cpu_pipe_testbench/DUT/Control_MemRead \
-sim:/cpu_pipe_testbench/DUT/Control_Branch \
+sim:/cpu_pipe_testbench/DUT/Control_MemWrite \
+sim:/cpu_pipe_testbench/DUT/Control_RegDst \
 sim:/cpu_pipe_testbench/DUT/Control_AluSrc \
 sim:/cpu_pipe_testbench/DUT/Control_AluOp \
+sim:/cpu_pipe_testbench/DUT/Control_Branch \
 sim:/cpu_pipe_testbench/DUT/MuxHazard_Output
 
 

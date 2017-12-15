@@ -41,6 +41,7 @@ output reg [4:0] rs_out, rt_out, rd_out;
 
 always @(posedge clk or posedge reset) begin
 
+if(!reset) begin
 wb_RegWrite_out <= wb_RegWrite;
 wb_MemToReg_out <= wb_MemToReg;
 mem_MemRead_out <= mem_MemRead;
@@ -57,7 +58,12 @@ immediate_out <= immediate;
 rs_out <= rs;
 rt_out <= rt;
 rd_out <= rd;
+end //if
 
+
+//delete the following?? this was before adding reset
+//to all pipe regs
+//************************************************
 //this is to make sure PC *starts* incrementing,
 //before the first instruction reaches EX stage,
 //OR when no instruction reaches EX stage at all.
@@ -74,9 +80,9 @@ rd_out <= rd;
 //occur.
 //To test this, keep the instructions memory empty
 //and run the simulation
-if(reset) begin
+//************************************************
+if(reset)
 ex_branch_out <= 1'd0;
-end //if
 
 end //always
 

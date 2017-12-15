@@ -23,4 +23,10 @@ module PC(PCNext, PCResult, Reset, Clk, PCWrite);
     	end
     end
 
+/*
+	always @(negedge PCWrite) begin
+		PCResult <= PCNext;
+	end
+*/
+
 endmodule
