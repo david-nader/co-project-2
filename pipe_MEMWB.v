@@ -28,7 +28,7 @@ wb_MemToReg_out <= wb_MemToReg;
 
 DataMemory_ReadData_out <= DataMemory_ReadData;
 ExMem_AluResult_out <= ExMem_AluResult;
-ExMem_MuxRegDst_out <= ExMem_MuxRegDst_out;
+ExMem_MuxRegDst_out <= ExMem_MuxRegDst;
 
 end //always
 

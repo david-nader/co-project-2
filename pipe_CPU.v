@@ -92,7 +92,7 @@ control ControlUnit(	InstMem_ReadData[31:26],
 			Control_AluOp,
 			Control_MemRead, Control_MemWrite, Control_MemtoReg,
 			Control_RegDst, Control_RegWrite, Control_AluSrc);
-register_file RegFile(InstMem_ReadData[25:21], InstMem_ReadData[20:16], MEMWB_MuxRegDst,
+register_file RegFile(IFID_Instruction[25:21], IFID_Instruction[20:16], MEMWB_MuxRegDst,
 		Reg_ReadData1, Reg_ReadData2, MuxMemToReg_Output, MEMWB_RegWrite, clk);
 
 mux_9x2 MuxHazard(	{
@@ -103,7 +103,7 @@ mux_9x2 MuxHazard(	{
 			9'd0,
 			Hazard_Mux, MuxHazard_Output);
 
-IDEX IDEXReg(clk,
+IDEX IDEXReg(clk, reset,
 		//inputs:
 		MuxHazard_Output[8], MuxHazard_Output[7],
 		MuxHazard_Output[6], MuxHazard_Output[5],
@@ -154,7 +154,7 @@ MEMWB MEMWBReg(clk,
 		MEMWB_ReadData, MEMWB_AluResult, MEMWB_MuxRegDst);
 
 //Write Back
-mux_32x2 MuxMemToReg(MEMWB_ReadData, MEMWB_AluResult, MEMWB_MemToReg, MuxMemToReg_Output);
+mux_32x2 MuxMemToReg(MEMWB_AluResult, MEMWB_ReadData, MEMWB_MemToReg, MuxMemToReg_Output);
 
 endmodule
 
@@ -179,17 +179,8 @@ for(i=0; i<32; i=i+1) begin
 	DUT.RegFile.memory[i] = i * 10;
 end //for
 
-#2
-reset = 1;
-//for some reason, $monitor does not print reset = 1
-$strobe("time: %2t, reset: %d", $time, reset);
-
-#5
-//NOTE: reset must go LOW on a -ve clk edge
-reset = 0;
-$strobe("time: %2t, reset: %d", $time, reset);
-
-
+//make sure $monitor is before any delays,
+//otherwise it starts printing after the delay
 $monitor("time: %2t: ", $time,
 	"reset: %d   ", reset,
 	"op: %d, ", DUT.InstMem_ReadData[31:26],
@@ -199,6 +190,11 @@ $monitor("time: %2t: ", $time,
 	"shamt: %d, ", DUT.InstMem_ReadData[10:6],
 	"funct: %d] | ", DUT.InstMem_ReadData[5:0],
 	"[Immediate: %d]", DUT.InstMem_ReadData[15:0]);
+
+#2
+reset = 1;
+#5
+reset = 0;
 
 
 end //initial

@@ -1,7 +1,7 @@
 
 module instructions_memory(instruction, read_address, clk, reset);
 
-output reg [31:0] instruction;
+output wire [31:0] instruction;
 
 input wire [31:0] read_address; //address of byte (not word)
 input wire clk;
@@ -11,15 +11,12 @@ input wire reset;
 parameter mem_size = 256;
 reg [7:0] memory [0:mem_size*4-1];
 
-//reset is asynchronus 
-always @(posedge clk or posedge reset) begin
+assign instruction = {memory[read_address], memory[read_address+1], memory[read_address+2], memory[read_address+3]};
 
-if(reset)
+//reset is asynchronus
+always @(posedge reset) begin
 	//read instructions memory from file
 	$readmemh("inst_mem.txt", memory);
-else
-	instruction <= {memory[read_address], memory[read_address+1], memory[read_address+2], memory[read_address+3]};
-
 end //always
 
 endmodule

@@ -10,7 +10,7 @@ Branch, MemRead, MemWrite
 RegWrite, MemToReg
 */
 
-module IDEX (clk,
+module IDEX (clk, reset,
 		//inputs:
 		wb_RegWrite, wb_MemToReg,
 		mem_MemRead, mem_MemWrite,
@@ -22,7 +22,7 @@ module IDEX (clk,
 		ex_RegDst_out, ex_AluSrc_out, ex_AluOp_out, ex_branch_out,
 		pc4_out, read_data1_out, read_data2_out, immediate_out, rs_out, rt_out, rd_out);
 //inputs:
-input wire clk;
+input wire clk, reset;
 input wire wb_RegWrite, wb_MemToReg,
 	   mem_MemRead, mem_MemWrite,
 	   ex_RegDst, ex_AluSrc, ex_branch;
@@ -39,7 +39,7 @@ output reg [31:0] pc4_out, read_data1_out, read_data2_out;
 output reg [15:0] immediate_out;
 output reg [4:0] rs_out, rt_out, rd_out;
 
-always @(posedge clk) begin
+always @(posedge clk or posedge reset) begin
 
 wb_RegWrite_out <= wb_RegWrite;
 wb_MemToReg_out <= wb_MemToReg;
@@ -57,6 +57,26 @@ immediate_out <= immediate;
 rs_out <= rs;
 rt_out <= rt;
 rd_out <= rd;
+
+//this is to make sure PC *starts* incrementing,
+//before the first instruction reaches EX stage,
+//OR when no instruction reaches EX stage at all.
+//This is because MuxBranch depends on the signal
+//from ID/EX, which won't be known before two
+//clock cycles from the time the first instruction
+//that is read from Instructions Memory enters Fetch
+//stage.
+//This should prevent problems when beq is the first
+//instruction in execution (verify?), otherwise,
+//a branch might occur, because beq reaches ID/EX
+//while reset is asserted, but now, while reset is
+//asserted, it is guaranteed that no branch will
+//occur.
+//To test this, keep the instructions memory empty
+//and run the simulation
+if(reset) begin
+ex_branch_out <= 1'd0;
+end //if
 
 end //always
 
