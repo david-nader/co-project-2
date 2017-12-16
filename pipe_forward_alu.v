@@ -1,5 +1,6 @@
 
-module forward_alu (EXMEM_RegWrite, EXMEM_RegisterRd, IDEX_RegisterRs, IDEX_RegisterRt, MEMWB_RegWrite, MEMWB_RegisterRd,forwardA ,forwardB);
+module forward_alu (EXMEM_MemRead, EXMEM_RegWrite, EXMEM_RegisterRd, IDEX_RegisterRs, IDEX_RegisterRt, MEMWB_RegWrite, MEMWB_RegisterRd,forwardA ,forwardB);
+input wire EXMEM_MemRead;
 input wire EXMEM_RegWrite;
 input wire MEMWB_RegWrite;
 input wire[4:0] EXMEM_RegisterRd;
@@ -35,7 +36,14 @@ and not (EX hazard...)
 always @(*)
 begin
 //alu to alu forwarding
-if((EXMEM_RegWrite==1) && (EXMEM_RegisterRd != 0) && (EXMEM_RegisterRd == IDEX_RegisterRs))
+if(	(EXMEM_RegWrite==1) &&
+	(EXMEM_RegisterRd != 0) &&
+	(EXMEM_RegisterRd == IDEX_RegisterRs) &&
+	//and if previous instruction is NOT lw (only needed when current instruction is sw)
+	//which would happen because hazard unit ignores the case of lw then sw, leaving
+	//it for the mem-to-mem forwarding unit
+	(EXMEM_MemRead != 1)
+)
 begin 
 	forwardA<=2'b10;
 	if((EXMEM_RegWrite==1) && (EXMEM_RegisterRd != 0) &&( EXMEM_RegisterRd == IDEX_RegisterRt))
@@ -45,7 +53,11 @@ begin
 end 
 
 
-else if((EXMEM_RegWrite==1) && (EXMEM_RegisterRd != 0) && (EXMEM_RegisterRd == IDEX_RegisterRt))
+else if((EXMEM_RegWrite==1) &&
+	(EXMEM_RegisterRd != 0) &&
+	(EXMEM_RegisterRd == IDEX_RegisterRt) &&
+	(EXMEM_MemRead != 1)
+)
 begin
 	forwardB<=2'b10;
 	forwardA<=2'b00;

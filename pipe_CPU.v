@@ -85,7 +85,7 @@ and AndGate(And_Output, IDEX_Branch, Alu_Zero);
 IFID IFIDReg(clk, reset, InstMem_ReadData, AdderPc_Output, Hazard_IFIDHold, IFID_Pc4, IFID_Instruction);
 
 //Decode
-hazard HazardUnit(IDEX_MemRead, IDEX_Rt, IFID_Instruction[25:21], IFID_Instruction[20:16],
+hazard HazardUnit(IDEX_MemRead, Control_MemWrite, IDEX_Rt, IFID_Instruction[25:21], IFID_Instruction[20:16],
 			Hazard_PcHold, Hazard_IFIDHold, Hazard_Mux, Control_Branch, IDEX_Branch);
 control ControlUnit(	reset,
 			IFID_Instruction[31:26],
@@ -126,16 +126,12 @@ sign_extend SignExtend(IDEX_Immediate, SignExtend_Output);
 shift_left_2 ShiftLeft2(SignExtend_Output , ShiftLeft2_Output);
 alu_adder AdderBeq(ShiftLeft2_Output, IDEX_Pc4, AdderBeq_Result);
 alu_control AluControl(IDEX_AluOp, IDEX_Immediate[5:0], AluControl_Output);
-forward_alu AluForwardUnit(	EXMEM_RegWrite, EXMEM_MuxRegDst,
+forward_alu AluForwardUnit(	EXMEM_MemRead,
+				EXMEM_RegWrite, EXMEM_MuxRegDst,
 				IDEX_Rs, IDEX_Rt,
 				MEMWB_RegWrite, MEMWB_MuxRegDst,
 				ForwardAlu_ForwardA, ForwardAlu_ForwardB);
-/* for reference (temp)
-module forward_alu (EXMEM_RegWrite, EXMEM_RegisterRd,
-			IDEX_RegisterRs, IDEX_RegisterRt,
-			MEMWB_RegWrite, MEMWB_RegisterRd,
-			forwardA ,forwardB);
-*/
+
 EXMEM EXMEMReg(clk, reset,
 		//inputs:
 		IDEX_RegWrite, IDEX_MemToReg,

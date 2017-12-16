@@ -56,8 +56,10 @@ sim:/cpu_pipe_testbench/DUT/IDEX_AluOp \
 sim:/cpu_pipe_testbench/DUT/MuxRegDst_Output \
 sim:/cpu_pipe_testbench/DUT/SignExtend_Output \
 sim:/cpu_pipe_testbench/DUT/MuxAluSrc_Output \
-sim:/cpu_pipe_testbench/DUT/ForwardAlu_ForwardB \
+-color "Cornflower Blue" \
 sim:/cpu_pipe_testbench/DUT/ForwardAlu_ForwardA \
+sim:/cpu_pipe_testbench/DUT/ForwardAlu_ForwardB \
+-color "default" \
 sim:/cpu_pipe_testbench/DUT/MuxForwardA_Output \
 sim:/cpu_pipe_testbench/DUT/MuxForwardB_Output \
 sim:/cpu_pipe_testbench/DUT/Alu_Zero \
@@ -69,12 +71,14 @@ add wave -group "Memory" -position insertpoint  \
 sim:/cpu_pipe_testbench/DUT/EXMEM_RegWrite \
 sim:/cpu_pipe_testbench/DUT/EXMEM_MuxRegDst \
 sim:/cpu_pipe_testbench/DUT/EXMEM_MuxForwardB \
+sim:/cpu_pipe_testbench/DUT/EXMEM_MemRead \
 sim:/cpu_pipe_testbench/DUT/EXMEM_MemWrite \
 sim:/cpu_pipe_testbench/DUT/EXMEM_MemToReg \
-sim:/cpu_pipe_testbench/DUT/EXMEM_MemRead \
 sim:/cpu_pipe_testbench/DUT/EXMEM_AluResult \
 sim:/cpu_pipe_testbench/DUT/DataMemory_ReadData \
+-color "Cornflower Blue" \
 sim:/cpu_pipe_testbench/DUT/ForwardMem_ForwardWriteData \
+-color "default" \
 sim:/cpu_pipe_testbench/DUT/MuxWriteData_Output
 
 

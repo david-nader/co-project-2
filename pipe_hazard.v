@@ -10,21 +10,22 @@ The first line tests to see if the instruction is a load: the only instruction
 */
 
 
-module hazard (IDEXMemRead, IDEXRegisterRt, IFIDRegisterRs, IFIDRegisterRt,
+module hazard (IDEXMemRead, ControlMemWrite, IDEXRegisterRt, IFIDRegisterRs, IFIDRegisterRt,
 			PCwrite, IFIDwrite, controlmux, ControlBranch, IDEXBranch);
 
 //for data hazard
-input IDEXMemRead;
-input [4:0] IDEXRegisterRt;
-input [4:0] IFIDRegisterRs;
-input [4:0] IFIDRegisterRt;
+input wire IDEXMemRead;
+input wire ControlMemWrite;
+input wire [4:0] IDEXRegisterRt;
+input wire [4:0] IFIDRegisterRs;
+input wire [4:0] IFIDRegisterRt;
 output reg PCwrite;
 output reg IFIDwrite;
 output reg controlmux;
 
 //for control hazard
-input IDEXBranch;
-input ControlBranch;
+input wire IDEXBranch;
+input wire ControlBranch;
 
 always @(*) begin
 
@@ -34,8 +35,12 @@ IFIDwrite<=0;
 controlmux<=0;
 
 //Data Hazard (Memory to Alu forwarding hazard)
-if(	(IDEXMemRead==1) &&
-	( (IDEXRegisterRt == IFIDRegisterRs) || (IDEXRegisterRt==IFIDRegisterRt) )	)
+//
+//when Rt==Rt, check if the current instruction
+//is NOT sw (bec. this will be mem-to-mem)
+if(	(IDEXMemRead==1) && //if previous instruction is lw 
+	( (IDEXRegisterRt == IFIDRegisterRs) || ((IDEXRegisterRt==IFIDRegisterRt) && (ControlMemWrite!=1)) )
+)
 	begin
 	PCwrite<=1;
 	IFIDwrite<=1;

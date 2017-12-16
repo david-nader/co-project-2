@@ -2,7 +2,7 @@
 
 
 module control(	input wire reset,
-		input  wire [5:0] opcode,
+		input wire [5:0] opcode,
 		output reg branch_eq,
 		output reg [1:0] aluop,
 		output reg memread, memwrite, memtoreg,
@@ -42,6 +42,12 @@ module control(	input wire reset,
 				aluop[1] <= 1'b0;
 				alusrc   <= 1'b1;
 				regwrite <= 1'b0;
+				//set regdst to ensure that Register rt is the one
+				//that reaches EX/MEM register, which is used
+				//in the condition of Mem-to-Mem forwarding unit,
+				//an alternative would be passing rt to EX/MEM (but this requires more
+				//changes than changing the Control Unit)
+				regdst	 <= 1'b0;
 			end
 		endcase
 	end //always
