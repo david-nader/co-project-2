@@ -23,7 +23,7 @@ reg [bit_width-1:0] memory [num_registers-1:0];
 //instruction has written in the same
 //cycle
 
-always @(posedge clk)
+always @(negedge clk)
 begin
 if(write_enable && reg_write != 0)
 	memory [reg_write] <= data_write;

@@ -21,9 +21,11 @@ sim:/cpu_pipe_testbench/DUT/InstMem_ReadData
 add wave -group "Decode" -position insertpoint  \
 sim:/cpu_pipe_testbench/DUT/IFID_Pc4 \
 sim:/cpu_pipe_testbench/DUT/IFID_Instruction \
+-color "Magenta" \
 sim:/cpu_pipe_testbench/DUT/Hazard_PcHold \
 sim:/cpu_pipe_testbench/DUT/Hazard_IFIDHold \
 sim:/cpu_pipe_testbench/DUT/Hazard_Mux \
+-color "" \
 sim:/cpu_pipe_testbench/DUT/Reg_ReadData1 \
 sim:/cpu_pipe_testbench/DUT/Reg_ReadData2 \
 sim:/cpu_pipe_testbench/DUT/Control_RegWrite \
@@ -34,6 +36,7 @@ sim:/cpu_pipe_testbench/DUT/Control_RegDst \
 sim:/cpu_pipe_testbench/DUT/Control_AluSrc \
 sim:/cpu_pipe_testbench/DUT/Control_AluOp \
 sim:/cpu_pipe_testbench/DUT/Control_Branch \
+-color "Magenta" \
 sim:/cpu_pipe_testbench/DUT/MuxHazard_Output
 
 
@@ -59,7 +62,7 @@ sim:/cpu_pipe_testbench/DUT/MuxAluSrc_Output \
 -color "Cornflower Blue" \
 sim:/cpu_pipe_testbench/DUT/ForwardAlu_ForwardA \
 sim:/cpu_pipe_testbench/DUT/ForwardAlu_ForwardB \
--color "default" \
+-color "" \
 sim:/cpu_pipe_testbench/DUT/MuxForwardA_Output \
 sim:/cpu_pipe_testbench/DUT/MuxForwardB_Output \
 sim:/cpu_pipe_testbench/DUT/Alu_Zero \
@@ -78,7 +81,7 @@ sim:/cpu_pipe_testbench/DUT/EXMEM_AluResult \
 sim:/cpu_pipe_testbench/DUT/DataMemory_ReadData \
 -color "Cornflower Blue" \
 sim:/cpu_pipe_testbench/DUT/ForwardMem_ForwardWriteData \
--color "default" \
+-color "" \
 sim:/cpu_pipe_testbench/DUT/MuxWriteData_Output
 
 
