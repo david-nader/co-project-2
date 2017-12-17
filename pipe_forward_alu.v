@@ -35,6 +35,10 @@ and not (EX hazard...)
 
 always @(*)
 begin
+//default values when no forwarding
+forwardA<=2'b00;
+forwardB<=2'b00;
+
 //alu to alu forwarding
 if(	(EXMEM_RegWrite==1) &&
 	(EXMEM_RegisterRd != 0) &&
@@ -48,11 +52,7 @@ begin
 	forwardA<=2'b10;
 	if((EXMEM_RegWrite==1) && (EXMEM_RegisterRd != 0) &&( EXMEM_RegisterRd == IDEX_RegisterRt))
 	forwardB<=2'b10;
-	else
-	forwardB<=2'b00;
 end 
-
-
 else if((EXMEM_RegWrite==1) &&
 	(EXMEM_RegisterRd != 0) &&
 	(EXMEM_RegisterRd == IDEX_RegisterRt) &&
@@ -60,32 +60,29 @@ else if((EXMEM_RegWrite==1) &&
 )
 begin
 	forwardB<=2'b10;
-	forwardA<=2'b00;
 end 
 
+
 //memory to alu forwarding:
-else if ((MEMWB_RegWrite==1)&& (MEMWB_RegisterRd != 0)&& (MEMWB_RegisterRd == IDEX_RegisterRs))
+if (
+	( (MEMWB_RegWrite==1) && (MEMWB_RegisterRd != 0) && (MEMWB_RegisterRd == IDEX_RegisterRs) )
+	&& //and not EX hazard (rs):
+	!( (EXMEM_RegWrite==1) && (EXMEM_RegisterRd != 0) && (EXMEM_RegisterRd == IDEX_RegisterRs) && (EXMEM_MemRead != 1) )
+)
 begin
 	forwardA<=2'b01;
 	if ((MEMWB_RegWrite==1)&& (MEMWB_RegisterRd != 0)&& (MEMWB_RegisterRd == IDEX_RegisterRt))
 	forwardB<=2'b01;
-	else
-	forwardB<=2'b00;
 end 
-
-
-else if ((MEMWB_RegWrite==1)&& (MEMWB_RegisterRd != 0)&& (MEMWB_RegisterRd == IDEX_RegisterRt))
+else if (
+	( (MEMWB_RegWrite==1)&& (MEMWB_RegisterRd != 0)&& (MEMWB_RegisterRd == IDEX_RegisterRt) )
+	&& //and not EX hazard (rt):
+	!( (EXMEM_RegWrite==1) && (EXMEM_RegisterRd != 0) && (EXMEM_RegisterRd == IDEX_RegisterRt) && (EXMEM_MemRead != 1) )
+)
 begin
 	forwardB<=2'b01;
-	forwardA<=2'b00;
 end
 
-
-else
-	begin
-	forwardA<=2'b00;
-	forwardB<=2'b00;
-	end
 end //always
 
 endmodule
