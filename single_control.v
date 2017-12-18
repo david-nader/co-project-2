@@ -13,12 +13,12 @@ module control(	input wire reset,
 		/* defaults */
 		aluop[1:0]	<= 2'b10;
 		alusrc		<= 1'b0;
-		branch_eq	<= 1'b0;
 		memread		<= 1'b0;
 		memtoreg	<= 1'b0;
 		memwrite	<= 1'b0;
 		regdst		<= 1'b1;
 		regwrite	<= 1'b1;
+		//branch_eq	<= 1'b0;
 		
 		case (opcode)
 			6'b100011: begin	/* lw */
@@ -34,7 +34,7 @@ module control(	input wire reset,
 			6'b000100: begin	/* beq */
 				aluop[0]  <= 1'b1;
 				aluop[1]  <= 1'b0;
-				branch_eq <= 1'b1;
+				//branch_eq <= 1'b1;
 				regwrite  <= 1'b0;
 			end
 			6'b101011: begin	/* sw */
@@ -52,10 +52,31 @@ module control(	input wire reset,
 		endcase
 	end //always
 
+
+	//when there is no instructions in the instructions
+	//memory, i.e. memory is "don't cares",
+	//this will let the PC increment idefinitely (because
+	//the value is stored as a reg not a wire, so it stays
+	//zero even after reset is de-asserted),
+	//otherwise, PC will increment for a few times, before
+	//it becomes a "don't care" value,
+	//
+	//however in hardware (and synthesization), the signal
+	//should be wire not reg, and thus this effect should
+	//not occur
+
 	always @(*)
-		//ensure PC will increment before an instruction
-		//reaches the EX stage
-		if(reset) begin
-			branch_eq <= 0;
+	if(!reset) begin
+		/* defaults */
+		branch_eq	<= 1'b0;
+		case (opcode)
+		6'b000100: begin	/* beq */
+			branch_eq <= 1'b1;
 		end
+		endcase
+	end
+	else if(reset) begin
+		branch_eq <= 0;
+	end
+
 endmodule

@@ -11,7 +11,9 @@ The first line tests to see if the instruction is a load: the only instruction
 
 
 module hazard (IDEXMemRead, ControlMemWrite, IDEXRegisterRt, IFIDRegisterRs, IFIDRegisterRt,
-			PCwrite, IFIDwrite, controlmux, ControlBranch, IDEXBranch);
+			PCwrite, IFIDwrite, controlmux, ControlBranch, IDEXBranch, IFIDflush);
+
+
 
 //for data hazard
 input wire IDEXMemRead;
@@ -26,40 +28,36 @@ output reg controlmux;
 //for control hazard
 input wire IDEXBranch;
 input wire ControlBranch;
+output reg IFIDflush;
 
 always @(*) begin
 
-//default values
-PCwrite<=0;
-IFIDwrite<=0;
-controlmux<=0;
+//default values,
+//to ensure synthesization as a combinational module
+PCwrite = 0;
+IFIDwrite = 0;
+controlmux = 0;
+IFIDflush = 0;
 
-//Data Hazard (Memory to Alu forwarding hazard)
-//
+//Data Hazard (Memory to Alu forwarding hazard),
 //when Rt==Rt, check if the current instruction
 //is NOT sw (bec. this will be mem-to-mem)
 if(	(IDEXMemRead==1) && //if previous instruction is lw 
 	( (IDEXRegisterRt == IFIDRegisterRs) || ((IDEXRegisterRt==IFIDRegisterRt) && (ControlMemWrite!=1)) )
 )
 	begin
-	PCwrite<=1;
-	IFIDwrite<=1;
-	controlmux<=1;
+	PCwrite = 1;
+	IFIDwrite = 1;
+	controlmux = 1;
 	end
 //Control Hazard (beq),
-//stall twice on branch
-if(IDEXBranch)
+//stall twice on branch
+else if(IDEXBranch || ControlBranch)
 	begin
-	PCwrite<=1;
-	IFIDwrite<=1;
-	controlmux<=1;
+	PCwrite = 1;
+	IFIDflush = 1;
 	end
-else if(ControlBranch)
-	begin
-	PCwrite<=1;
-	IFIDwrite<=1;
-	controlmux<=0; //let branch move to EX stage
-	end
+
 end //always
 endmodule
 

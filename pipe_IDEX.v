@@ -58,30 +58,15 @@ immediate_out <= immediate;
 rs_out <= rs;
 rt_out <= rt;
 rd_out <= rd;
-end //if
-
-
-//delete the following?? this was before adding reset
-//to all pipe regs
-//************************************************
-//this is to make sure PC *starts* incrementing,
-//before the first instruction reaches EX stage,
-//OR when no instruction reaches EX stage at all.
-//This is because MuxBranch depends on the signal
-//from ID/EX, which won't be known before two
-//clock cycles from the time the first instruction
-//that is read from Instructions Memory enters Fetch
-//stage.
-//This should prevent problems when beq is the first
-//instruction in execution (verify?), otherwise,
-//a branch might occur, because beq reaches ID/EX
-//while reset is asserted, but now, while reset is
-//asserted, it is guaranteed that no branch will
-//occur.
-//To test this, keep the instructions memory empty
-//and run the simulation
-//************************************************
-if(reset)
+end
+else if(reset)
+//required to ensure the PC will initially
+//increment before an instruction reaches
+//MEM stage, where it's control signals,
+//specifically the Branch signal,
+//would have propagated through the pipeline
+//till it gives a valid input to the
+//BranchAnd gate
 ex_branch_out <= 1'd0;
 
 end //always

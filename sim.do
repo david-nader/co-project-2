@@ -8,7 +8,6 @@ sim:/cpu_pipe_testbench/DUT/clk
 add wave -group "PC-related" -position insertpoint  \
 sim:/cpu_pipe_testbench/DUT/PC_output \
 sim:/cpu_pipe_testbench/DUT/AdderPc_Output \
-sim:/cpu_pipe_testbench/DUT/ShiftLeft2_Output \
 sim:/cpu_pipe_testbench/DUT/AdderBeq_Result \
 sim:/cpu_pipe_testbench/DUT/And_Output \
 sim:/cpu_pipe_testbench/DUT/MuxBranch_Output
@@ -25,6 +24,7 @@ sim:/cpu_pipe_testbench/DUT/IFID_Instruction \
 sim:/cpu_pipe_testbench/DUT/Hazard_PcHold \
 sim:/cpu_pipe_testbench/DUT/Hazard_IFIDHold \
 sim:/cpu_pipe_testbench/DUT/Hazard_Mux \
+sim:/cpu_pipe_testbench/DUT/Hazard_IFIDFlush \
 -color "" \
 sim:/cpu_pipe_testbench/DUT/Reg_ReadData1 \
 sim:/cpu_pipe_testbench/DUT/Reg_ReadData2 \
@@ -58,6 +58,7 @@ sim:/cpu_pipe_testbench/DUT/IDEX_AluSrc \
 sim:/cpu_pipe_testbench/DUT/IDEX_AluOp \
 sim:/cpu_pipe_testbench/DUT/MuxRegDst_Output \
 sim:/cpu_pipe_testbench/DUT/SignExtend_Output \
+sim:/cpu_pipe_testbench/DUT/ShiftLeft2_Output \
 sim:/cpu_pipe_testbench/DUT/MuxAluSrc_Output \
 -color "Cornflower Blue" \
 sim:/cpu_pipe_testbench/DUT/ForwardAlu_ForwardA \
@@ -94,4 +95,4 @@ sim:/cpu_pipe_testbench/DUT/MEMWB_AluResult \
 sim:/cpu_pipe_testbench/DUT/MuxMemToReg_Output
 
 
-run 50
+run 30

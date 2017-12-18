@@ -35,7 +35,7 @@ wire Control_MemWrite, Control_AluSrc, Control_RegWrite;
 wire [1:0] Control_AluOp;
 wire [31:0] Reg_ReadData1, Reg_ReadData2;
 wire [8:0] MuxHazard_Output;
-wire Hazard_IFIDHold, Hazard_PcHold, Hazard_Mux;
+wire Hazard_IFIDHold, Hazard_PcHold, Hazard_Mux, Hazard_IFIDFlush;
 
 wire IDEX_RegWrite, IDEX_MemToReg, IDEX_MemRead, IDEX_MemWrite, IDEX_Branch, IDEX_RegDst, IDEX_AluSrc;
 wire [1:0] IDEX_AluOp;
@@ -82,11 +82,12 @@ alu_adder AdderPc(4, PC_output, AdderPc_Output);
 mux_32x2 MuxBranch(AdderPc_Output, AdderBeq_Result, And_Output, MuxBranch_Output);
 and AndGate(And_Output, IDEX_Branch, Alu_Zero);
 
-IFID IFIDReg(clk, reset, InstMem_ReadData, AdderPc_Output, Hazard_IFIDHold, IFID_Pc4, IFID_Instruction);
+IFID IFIDReg(clk, reset, InstMem_ReadData, AdderPc_Output,
+	Hazard_IFIDHold, IFID_Pc4, IFID_Instruction, Hazard_IFIDFlush);
 
 //Decode
 hazard HazardUnit(IDEX_MemRead, Control_MemWrite, IDEX_Rt, IFID_Instruction[25:21], IFID_Instruction[20:16],
-			Hazard_PcHold, Hazard_IFIDHold, Hazard_Mux, Control_Branch, IDEX_Branch);
+			Hazard_PcHold, Hazard_IFIDHold, Hazard_Mux, Control_Branch, IDEX_Branch, Hazard_IFIDFlush);
 control ControlUnit(	reset,
 			IFID_Instruction[31:26],
 			Control_Branch,
