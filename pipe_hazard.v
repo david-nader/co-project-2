@@ -11,7 +11,7 @@ The first line tests to see if the instruction is a load: the only instruction
 
 
 module hazard (IDEXMemRead, ControlMemWrite, IDEXRegisterRt, IFIDRegisterRs, IFIDRegisterRt,
-			PCwrite, IFIDwrite, controlmux, ControlBranch, IDEXBranch, IFIDflush);
+		PCwrite, IFIDwrite, controlmux, ControlBranch, IDEXBranch, IFIDflush, BranchAnd);
 
 
 
@@ -28,6 +28,7 @@ output reg controlmux;
 //for control hazard
 input wire IDEXBranch;
 input wire ControlBranch;
+input wire BranchAnd;
 output reg IFIDflush;
 
 always @(*) begin
@@ -51,12 +52,20 @@ if(	(IDEXMemRead==1) && //if previous instruction is lw
 	controlmux = 1;
 	end
 //Control Hazard (beq),
-//stall twice on branch
-else if(IDEXBranch || ControlBranch)
+//stall twice on branch
+else if(ControlBranch)
 	begin
 	PCwrite = 1;
 	IFIDflush = 1;
 	end
+else if (IDEXBranch)
+	begin
+	//for the PC to be correct after a
+	//**taken** branch only, PCHold must get
+	//de-asserted
+	PCwrite = (BranchAnd) ? 0 : 1;
+	IFIDflush = 1;
+	end
 
 end //always
 endmodule

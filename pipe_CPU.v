@@ -87,7 +87,8 @@ IFID IFIDReg(clk, reset, InstMem_ReadData, AdderPc_Output,
 
 //Decode
 hazard HazardUnit(IDEX_MemRead, Control_MemWrite, IDEX_Rt, IFID_Instruction[25:21], IFID_Instruction[20:16],
-			Hazard_PcHold, Hazard_IFIDHold, Hazard_Mux, Control_Branch, IDEX_Branch, Hazard_IFIDFlush);
+			Hazard_PcHold, Hazard_IFIDHold, Hazard_Mux, Control_Branch, IDEX_Branch, Hazard_IFIDFlush,
+			And_Output);
 control ControlUnit(	reset,
 			IFID_Instruction[31:26],
 			Control_Branch,
