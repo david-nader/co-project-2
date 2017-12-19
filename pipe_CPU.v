@@ -146,7 +146,7 @@ EXMEM EXMEMReg(clk, reset,
 
 //Memory
 mux_32x2 MuxWriteData(EXMEM_MuxForwardB, MuxMemToReg_Output, ForwardMem_ForwardWriteData, MuxWriteData_Output);
-forward_memory MemoryForwardUnit(MEMWB_MemToReg, MEMWB_MuxRegDst, EXMEM_MuxRegDst , ForwardMem_ForwardWriteData);
+forward_memory MemoryForwardUnit(EXMEM_MemWrite, MEMWB_MemToReg, MEMWB_MuxRegDst, EXMEM_MuxRegDst , ForwardMem_ForwardWriteData);
 data_memory DMem(DataMemory_ReadData, EXMEM_AluResult, MuxWriteData_Output, EXMEM_MemWrite, EXMEM_MemRead, clk);
 
 MEMWB MEMWBReg(clk, reset,

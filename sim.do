@@ -114,7 +114,7 @@ mem save -dataradix hex -addressradix dec -wordsperline 4 -noaddress -endaddress
 
 # Then run the reset of simulation
 
-run 30
+run 70
 mem save -dataradix decimal -addressradix dec -wordsperline 4 -noaddress \
 -outfile "Output_RegFile_after.txt" /cpu_pipe_testbench/DUT/RegFile/memory
 
