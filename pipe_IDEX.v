@@ -39,7 +39,7 @@ output reg [31:0] pc4_out, read_data1_out, read_data2_out;
 output reg [15:0] immediate_out;
 output reg [4:0] rs_out, rt_out, rd_out;
 
-always @(posedge clk or posedge reset) begin
+always @(posedge clk) begin
 
 if(!reset) begin
 wb_RegWrite_out <= wb_RegWrite;

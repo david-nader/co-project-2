@@ -1,16 +1,17 @@
 vsim cpu_pipe_testbench
 
+
 add wave -position insertpoint  \
 sim:/cpu_pipe_testbench/DUT/reset \
 sim:/cpu_pipe_testbench/DUT/clk
 
 
-add wave -group "PC-related" -position insertpoint  \
-sim:/cpu_pipe_testbench/DUT/PC_output \
+add wave -group "PC-related" -position insertpoint -radix unsigned \
+sim:/cpu_pipe_testbench/DUT/MuxBranch_Output \
 sim:/cpu_pipe_testbench/DUT/AdderPc_Output \
 sim:/cpu_pipe_testbench/DUT/AdderBeq_Result \
 sim:/cpu_pipe_testbench/DUT/And_Output \
-sim:/cpu_pipe_testbench/DUT/MuxBranch_Output
+sim:/cpu_pipe_testbench/DUT/PC_output
 
 
 add wave -group "Fetch" -position insertpoint  \
@@ -95,4 +96,27 @@ sim:/cpu_pipe_testbench/DUT/MEMWB_AluResult \
 sim:/cpu_pipe_testbench/DUT/MuxMemToReg_Output
 
 
+
+# Run for a few cycles till Reset occurs and
+# snapshot all memories to get a reference that
+# can be compared to the snapshot after execution
+
+run 5
+mem save -dataradix decimal -addressradix dec -wordsperline 4 -noaddress \
+-outfile "Output_RegFile_before.txt" /cpu_pipe_testbench/DUT/RegFile/memory
+
+mem save -dataradix decimal -addressradix dec -wordsperline 4 -noaddress -endaddress 63 \
+-outfile "Output_DMem_before.txt" /cpu_pipe_testbench/DUT/DMem/memory
+
+mem save -dataradix hex -addressradix dec -wordsperline 4 -noaddress -endaddress 63 \
+-outfile "Output_IMem_before.txt" /cpu_pipe_testbench/DUT/IMem/memory
+
+
+# Then run the reset of simulation
+
 run 30
+mem save -dataradix decimal -addressradix dec -wordsperline 4 -noaddress \
+-outfile "Output_RegFile_after.txt" /cpu_pipe_testbench/DUT/RegFile/memory
+
+mem save -dataradix decimal -addressradix dec -wordsperline 4 -noaddress -endaddress 63 \
+-outfile "Output_DMem_after.txt" /cpu_pipe_testbench/DUT/DMem/memory

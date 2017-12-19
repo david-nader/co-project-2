@@ -13,7 +13,7 @@ output wire [31:0] data_read2;
 
 //Memory
 parameter bit_width = 32, num_registers = 32;
-reg [bit_width-1:0] memory [num_registers-1:0];
+reg [bit_width-1:0] memory [0:num_registers-1];
 //example: memory[0] refers to the first register
 
 //read-after-write:
