@@ -90,7 +90,8 @@ endmodule
 
 
 
-
+//testbench needs updating after the
+//changes made to the DUT
 module testforwardunit;
 reg [4:0] MEMWB_RegisterRd;
 reg [4:0] EXMEM_RegisterRd;

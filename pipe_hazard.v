@@ -73,7 +73,8 @@ endmodule
 
 
 
-
+//testbench needs updating after the
+//changes made to the DUT
 module testdatahazard_detection;
 reg [4:0] IDEXMemRead;
 reg [4:0] IDEXRegisterRt;

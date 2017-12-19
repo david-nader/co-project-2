@@ -16,7 +16,8 @@ endmodule
 
 
 
-//obsolete testbench
+//testbench needs updating after the
+//changes made to the DUT
 module testmemoryforwarding;
 reg [5:0] opcode;
 reg [4:0] MEMWB_RegisterRt;
